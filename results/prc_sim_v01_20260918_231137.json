@@ -1,0 +1,524 @@
+{
+  "abr_operators_absent": true,
+  "b_absent": true,
+  "build_plan": "V1.2",
+  "convention": "WeAreDevelopers San Jose",
+  "kernel_authority": "operators.rs V7 / derived_invariants.rs V4.1",
+  "physical_fabrication_claimed": false,
+  "records": [
+    {
+      "admissibility_finding": null,
+      "cx": 0,
+      "cycle_detected": false,
+      "delta_values": [
+        [
+          -1.0
+        ]
+      ],
+      "expression_condition": false,
+      "failure_mode": null,
+      "fixture_id": "F1_PRC2_pair",
+      "k": 1,
+      "n_edges": 1,
+      "n_nodes": 2,
+      "observation_class": "SimulatedInput",
+      "rank_delta": 1,
+      "rank_sigma": 1,
+      "rho_p": {
+        "Undefined": {
+          "reason": "NoDeclaredComponents"
+        }
+      },
+      "sigma_values": [
+        [
+          -1.0
+        ]
+      ],
+      "topology_label": "Pair"
+    },
+    {
+      "admissibility_finding": null,
+      "cx": 1,
+      "cycle_detected": false,
+      "delta_values": [
+        [
+          -1.0,
+          -1.0
+        ]
+      ],
+      "expression_condition": true,
+      "failure_mode": null,
+      "fixture_id": "F2_chain3",
+      "k": 1,
+      "n_edges": 2,
+      "n_nodes": 3,
+      "observation_class": "SimulatedInput",
+      "rank_delta": 1,
+      "rank_sigma": 1,
+      "rho_p": {
+        "Determined": {
+          "cx": 1,
+          "rank_sigma": 1
+        }
+      },
+      "sigma_values": [
+        [
+          0.0,
+          -1.0
+        ]
+      ],
+      "topology_label": "Chain3"
+    },
+    {
+      "admissibility_finding": null,
+      "cx": 3,
+      "cycle_detected": true,
+      "delta_values": [
+        [
+          -1.0,
+          -1.0,
+          2.0
+        ]
+      ],
+      "expression_condition": true,
+      "failure_mode": null,
+      "fixture_id": "F3_3LCT",
+      "k": 1,
+      "n_edges": 3,
+      "n_nodes": 3,
+      "observation_class": "SimulatedInput",
+      "rank_delta": 1,
+      "rank_sigma": 1,
+      "rho_p": {
+        "CeilingBounded": {
+          "cx": 3,
+          "rank_sigma": 1
+        }
+      },
+      "sigma_values": [
+        [
+          0.0,
+          -3.0,
+          3.0
+        ]
+      ],
+      "topology_label": "ClosedRelational3"
+    },
+    {
+      "admissibility_finding": null,
+      "cx": 2,
+      "cycle_detected": false,
+      "delta_values": [
+        [
+          -1.0,
+          -1.0,
+          -1.0
+        ]
+      ],
+      "expression_condition": true,
+      "failure_mode": null,
+      "fixture_id": "F4_chain4",
+      "k": 1,
+      "n_edges": 3,
+      "n_nodes": 4,
+      "observation_class": "SimulatedInput",
+      "rank_delta": 1,
+      "rank_sigma": 1,
+      "rho_p": {
+        "CeilingBounded": {
+          "cx": 2,
+          "rank_sigma": 1
+        }
+      },
+      "sigma_values": [
+        [
+          0.0,
+          0.0,
+          -1.0
+        ]
+      ],
+      "topology_label": "Chain4"
+    },
+    {
+      "admissibility_finding": null,
+      "cx": 1,
+      "cycle_detected": false,
+      "delta_values": [
+        [
+          -1.0,
+          -1.0,
+          -2.0
+        ]
+      ],
+      "expression_condition": true,
+      "failure_mode": null,
+      "fixture_id": "F5_branch",
+      "k": 1,
+      "n_edges": 3,
+      "n_nodes": 4,
+      "observation_class": "SimulatedInput",
+      "rank_delta": 1,
+      "rank_sigma": 1,
+      "rho_p": {
+        "Determined": {
+          "cx": 1,
+          "rank_sigma": 1
+        }
+      },
+      "sigma_values": [
+        [
+          2.0,
+          -1.0,
+          -2.0
+        ]
+      ],
+      "topology_label": "Branch"
+    },
+    {
+      "admissibility_finding": null,
+      "cx": 2,
+      "cycle_detected": false,
+      "delta_values": [
+        [
+          -2.0,
+          -1.0,
+          -1.0
+        ]
+      ],
+      "expression_condition": true,
+      "failure_mode": null,
+      "fixture_id": "F6_convergent",
+      "k": 1,
+      "n_edges": 3,
+      "n_nodes": 4,
+      "observation_class": "SimulatedInput",
+      "rank_delta": 1,
+      "rank_sigma": 1,
+      "rho_p": {
+        "CeilingBounded": {
+          "cx": 2,
+          "rank_sigma": 1
+        }
+      },
+      "sigma_values": [
+        [
+          -1.0,
+          0.0,
+          -1.0
+        ]
+      ],
+      "topology_label": "Convergent"
+    },
+    {
+      "admissibility_finding": null,
+      "cx": 2,
+      "cycle_detected": true,
+      "delta_values": [
+        [
+          -1.0,
+          -2.0,
+          -2.0,
+          -1.0
+        ]
+      ],
+      "expression_condition": true,
+      "failure_mode": null,
+      "fixture_id": "F7_diamond",
+      "k": 1,
+      "n_edges": 4,
+      "n_nodes": 4,
+      "observation_class": "SimulatedInput",
+      "rank_delta": 1,
+      "rank_sigma": 1,
+      "rho_p": {
+        "CeilingBounded": {
+          "cx": 2,
+          "rank_sigma": 1
+        }
+      },
+      "sigma_values": [
+        [
+          1.0,
+          -1.0,
+          -2.0,
+          -1.0
+        ]
+      ],
+      "topology_label": "Diamond"
+    },
+    {
+      "admissibility_finding": null,
+      "cx": 3,
+      "cycle_detected": true,
+      "delta_values": [
+        [
+          -1.0,
+          -1.0,
+          2.0
+        ]
+      ],
+      "expression_condition": true,
+      "failure_mode": null,
+      "fixture_id": "F3_3LCT_k1",
+      "k": 1,
+      "n_edges": 3,
+      "n_nodes": 3,
+      "observation_class": "SimulatedInput",
+      "rank_delta": 1,
+      "rank_sigma": 1,
+      "rho_p": {
+        "CeilingBounded": {
+          "cx": 3,
+          "rank_sigma": 1
+        }
+      },
+      "sigma_values": [
+        [
+          0.0,
+          -3.0,
+          3.0
+        ]
+      ],
+      "topology_label": "ClosedRelational3"
+    },
+    {
+      "admissibility_finding": null,
+      "cx": 3,
+      "cycle_detected": true,
+      "delta_values": [
+        [
+          -1.0,
+          -1.0,
+          2.0
+        ],
+        [
+          -1.0,
+          -1.0,
+          2.0
+        ]
+      ],
+      "expression_condition": true,
+      "failure_mode": null,
+      "fixture_id": "F3_3LCT_k2",
+      "k": 2,
+      "n_edges": 3,
+      "n_nodes": 3,
+      "observation_class": "SimulatedInput",
+      "rank_delta": 1,
+      "rank_sigma": 1,
+      "rho_p": {
+        "CeilingBounded": {
+          "cx": 3,
+          "rank_sigma": 1
+        }
+      },
+      "sigma_values": [
+        [
+          0.0,
+          -3.0,
+          3.0
+        ],
+        [
+          0.0,
+          -3.0,
+          3.0
+        ]
+      ],
+      "topology_label": "ClosedRelational3"
+    },
+    {
+      "admissibility_finding": null,
+      "cx": 3,
+      "cycle_detected": true,
+      "delta_values": [
+        [
+          -1.0,
+          -1.0,
+          2.0
+        ],
+        [
+          -1.0,
+          -1.0,
+          2.0
+        ],
+        [
+          -1.0,
+          -1.0,
+          2.0
+        ]
+      ],
+      "expression_condition": true,
+      "failure_mode": null,
+      "fixture_id": "F3_3LCT_k3",
+      "k": 3,
+      "n_edges": 3,
+      "n_nodes": 3,
+      "observation_class": "SimulatedInput",
+      "rank_delta": 1,
+      "rank_sigma": 1,
+      "rho_p": {
+        "CeilingBounded": {
+          "cx": 3,
+          "rank_sigma": 1
+        }
+      },
+      "sigma_values": [
+        [
+          0.0,
+          -3.0,
+          3.0
+        ],
+        [
+          0.0,
+          -3.0,
+          3.0
+        ],
+        [
+          0.0,
+          -3.0,
+          3.0
+        ]
+      ],
+      "topology_label": "ClosedRelational3"
+    },
+    {
+      "admissibility_finding": null,
+      "cx": 3,
+      "cycle_detected": true,
+      "delta_values": [
+        [
+          -0.5,
+          -1.0,
+          1.5
+        ]
+      ],
+      "expression_condition": true,
+      "failure_mode": null,
+      "fixture_id": "F8_3LCT_intervention",
+      "k": 1,
+      "n_edges": 3,
+      "n_nodes": 3,
+      "observation_class": "SimulatedInput",
+      "rank_delta": 1,
+      "rank_sigma": 1,
+      "rho_p": {
+        "CeilingBounded": {
+          "cx": 3,
+          "rank_sigma": 1
+        }
+      },
+      "sigma_values": [
+        [
+          0.5,
+          -2.5,
+          2.0
+        ]
+      ],
+      "topology_label": "ClosedRelational3"
+    },
+    {
+      "admissibility_finding": null,
+      "cx": 1,
+      "cycle_detected": false,
+      "delta_values": [
+        [
+          -0.5,
+          -1.0
+        ]
+      ],
+      "expression_condition": true,
+      "failure_mode": null,
+      "fixture_id": "F9_chain_intervention",
+      "k": 1,
+      "n_edges": 2,
+      "n_nodes": 3,
+      "observation_class": "SimulatedInput",
+      "rank_delta": 1,
+      "rank_sigma": 1,
+      "rho_p": {
+        "Determined": {
+          "cx": 1,
+          "rank_sigma": 1
+        }
+      },
+      "sigma_values": [
+        [
+          0.5,
+          -1.0
+        ]
+      ],
+      "topology_label": "Chain3"
+    },
+    {
+      "admissibility_finding": null,
+      "cx": 3,
+      "cycle_detected": true,
+      "delta_values": [
+        [
+          -1.0,
+          -1.0,
+          2.0
+        ]
+      ],
+      "expression_condition": true,
+      "failure_mode": null,
+      "fixture_id": "F3_3LCT_full",
+      "k": 1,
+      "n_edges": 3,
+      "n_nodes": 3,
+      "observation_class": "SimulatedInput",
+      "rank_delta": 1,
+      "rank_sigma": 1,
+      "rho_p": {
+        "CeilingBounded": {
+          "cx": 3,
+          "rank_sigma": 1
+        }
+      },
+      "sigma_values": [
+        [
+          0.0,
+          -3.0,
+          3.0
+        ]
+      ],
+      "topology_label": "ClosedRelational3"
+    },
+    {
+      "admissibility_finding": null,
+      "cx": 1,
+      "cycle_detected": false,
+      "delta_values": [
+        [
+          -1.0,
+          -1.0
+        ]
+      ],
+      "expression_condition": true,
+      "failure_mode": null,
+      "fixture_id": "F10_closure_removed",
+      "k": 1,
+      "n_edges": 2,
+      "n_nodes": 3,
+      "observation_class": "SimulatedInput",
+      "rank_delta": 1,
+      "rank_sigma": 1,
+      "rho_p": {
+        "Determined": {
+          "cx": 1,
+          "rank_sigma": 1
+        }
+      },
+      "sigma_values": [
+        [
+          0.0,
+          -1.0
+        ]
+      ],
+      "topology_label": "Chain3"
+    }
+  ],
+  "simulator": "abr-primary-relational-cell",
+  "timestamp": "20260918_231137",
+  "version": "V0.1"
+}
