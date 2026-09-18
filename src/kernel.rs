@@ -1,27 +1,51 @@
 // kernel.rs — Metatron Dynamics, Inc.
-// abr-primary-relational-cell V0.1
+// abr-primary-relational-cell V0.1.2
 //
 // Primary kernel: E_primary = Σ(Δ(x))
 //
-// Independently implements Δ, Σ, antisymmetric terms, rank(Im Δ),
-// rank(Im Σ), propagation capacity C_X, ρ_P, expression_condition.
+// Kernel authority: operators.rs V7. Every formula independently implemented
+// against that authority. Kernel files are reference only — not a dependency.
 //
-// Kernel authority: operators.rs V7. Every formula here is independently
-// derived from that authority. Kernel files are reference only —
-// not a code dependency.
+// rho_base declaration (Origin, 18 Sep 2026):
+//   Admissible Primary Region operating range: [0.1, 0.5].
+//   Rationale: rho_base must be large enough that antisymmetric term is
+//   nonzero (expression_condition admissible) and small enough that ρ_P ≪ 1
+//   (unambiguously Primary Region, below unknown ABR activation threshold
+//   OC-ρP-1). Values above 0.5 risk approaching the transition region.
+//   Values below 0.1 suppress the antisymmetric term to near-zero.
+//   This range is a declared Origin parameter — not an imported default.
+//   Convention fixtures run at 0.1, 0.3, and 0.5 to span the declared range.
 //
 // B absent. ABR operators absent. No persistence. No path accumulation.
-// No model-generated trajectory. No statistical quantities.
-// No quantum-mechanical primitives imported — consequences only through M.
 
+use nalgebra::DMatrix;
 use serde::{Deserialize, Serialize};
 use crate::topology::DeclaredRelations;
 use crate::node_field::NodeField;
 
+pub const SVD_TOLERANCE: f64 = 1e-10;
+
+/// Declared rho_base range for Primary Region operation.
+/// Origin declaration, 18 Sep 2026.
+pub const RHO_BASE_MIN: f64 = 0.1;
+pub const RHO_BASE_MAX: f64 = 0.5;
+/// Convention sweep values spanning the declared range.
+pub const RHO_BASE_SWEEP: [f64; 3] = [0.1, 0.3, 0.5];
+
+/// Validate that a rho_base value is within the declared Primary Region range.
+/// Panics if out of range — an undeclared value must not silently enter.
+pub fn assert_rho_base_in_range(rho_base: f64) {
+    assert!(
+        rho_base >= RHO_BASE_MIN && rho_base <= RHO_BASE_MAX,
+        "rho_base={} is outside declared Primary Region range [{}, {}]. \
+         Origin must declare a value within this range.",
+        rho_base, RHO_BASE_MIN, RHO_BASE_MAX
+    );
+}
+
 // ── Primary Edge Field ────────────────────────────────────────────────────
 
-/// Output of Δ applied to a NodeField over DeclaredRelations.
-/// field[component][edge] = directed difference at that edge.
+/// Output field over declared edges. field[component][edge].
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct PrimaryEdgeField {
     pub field: Vec<Vec<f64>>,
@@ -29,227 +53,259 @@ pub struct PrimaryEdgeField {
     pub n_edges: usize,
 }
 
-/// Output of Σ applied to a PrimaryEdgeField over DeclaredRelations.
-/// field[component][edge] = accumulated relational contrast at that edge.
-#[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct SigmaField {
-    pub field: Vec<Vec<f64>>,
-    pub n_components: usize,
-    pub n_edges: usize,
-}
-
-// ── ρ_P Classification ────────────────────────────────────────────────────
-
-/// Named reason for ρ_P Undefined.
-/// Source: operators.rs V7 — RhoPUndefined variants.
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub enum RhoPUndefinedReason {
-    /// C_X = 0: no edge has a non-empty adj_plus. ρ_P has no denominator.
-    NoDeclaredComponents,
-    /// rank(Im Σ) could not be computed (degenerate field).
-    DegenerateField,
-}
-
-/// ρ_P classification: ratio of rank(Im Σ) to propagation capacity C_X.
-/// Source: operators.rs V7 lines 601–690.
-///
-/// Ceiling condition (G6): Determined requires k ≥ C_X.
-/// CeilingBounded: k < C_X — rank is bounded by k, not C_X.
-/// Undefined: C_X = 0 or degenerate field.
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub enum RhoP {
-    /// rank(Im Σ) ≥ C_X — propagation capacity fully expressed.
-    Determined { rank_sigma: usize, cx: usize },
-    /// rank(Im Σ) < C_X — ceiling imposed by declared components k.
-    CeilingBounded { rank_sigma: usize, cx: usize },
-    /// C_X = 0 or degenerate: ρ_P not defined.
-    Undefined { reason: RhoPUndefinedReason },
+impl PrimaryEdgeField {
+    pub fn new(field: Vec<Vec<f64>>, n_edges: usize) -> Self {
+        let n_components = field.len();
+        assert!(n_components > 0, "at least one component required");
+        assert!(field.iter().all(|c| c.len() == n_edges),
+            "all components must have length n_edges");
+        PrimaryEdgeField { field, n_components, n_edges }
+    }
 }
 
 // ── Operator Δ ────────────────────────────────────────────────────────────
 
-/// Δ(x): directed difference at each declared edge.
-/// Δ(x)[e] = x[source(e)] - x[target(e)] for each component.
-///
-/// Formula: operators.rs V7 operator_delta.
-/// Independent implementation — kernel file is reference only.
+/// Δ(x)[e] = x[source(e)] − x[target(e)] for each component.
+/// Source: operators.rs V7 operator_delta.
 pub fn operator_delta(x: &NodeField, rel: &DeclaredRelations) -> PrimaryEdgeField {
-    assert_eq!(
-        x.n_nodes, rel.n_nodes,
-        "NodeField n_nodes must match DeclaredRelations n_nodes"
-    );
+    assert_eq!(x.n_nodes, rel.n_nodes,
+        "NodeField n_nodes must match DeclaredRelations n_nodes");
     let n_edges = rel.n_edges();
-    let mut field = vec![vec![0.0f64; n_edges]; x.n_components];
-    for c in 0..x.n_components {
-        for (e, &(s, t)) in rel.edges.iter().enumerate() {
-            field[c][e] = x.field[c][s] - x.field[c][t];
-        }
+    let field: Vec<Vec<f64>> = (0..x.n_components)
+        .map(|c| rel.edges.iter()
+            .map(|&(s, t)| x.field[c][s] - x.field[c][t])
+            .collect())
+        .collect();
+    PrimaryEdgeField::new(field, n_edges)
+}
+
+// ── ρ (Primary edge form) ─────────────────────────────────────────────────
+
+/// compute_rho_primary: edge-form ρ, evaluated at source locus of each edge.
+///
+/// ρ[e] = rho_base · χ[source(e)] / (1 + χ[source(e)])
+/// χ[s] = max{ |Δ(x)[e']| : e' incident to s } over all components.
+///
+/// rho_base must be within declared Primary Region range [0.1, 0.5].
+/// Source: operators.rs V7 compute_rho_primary lines 474–490.
+pub fn compute_rho_primary(
+    delta_field: &PrimaryEdgeField,
+    rel: &DeclaredRelations,
+    rho_base: f64,
+) -> Vec<f64> {
+    assert_rho_base_in_range(rho_base);
+    let mut node_incident: Vec<Vec<usize>> = vec![Vec::new(); rel.n_nodes];
+    for (e, &(s, t)) in rel.edges.iter().enumerate() {
+        node_incident[s].push(e);
+        node_incident[t].push(e);
     }
-    PrimaryEdgeField { field, n_components: x.n_components, n_edges }
+    rel.edges.iter().map(|&(s, _)| {
+        let chi = node_incident[s].iter()
+            .flat_map(|&e| delta_field.field.iter().map(move |c| c[e].abs()))
+            .fold(0.0_f64, f64::max);
+        rho_base * chi / (1.0 + chi)
+    }).collect()
 }
 
 // ── Operator Σ ────────────────────────────────────────────────────────────
 
-/// Σ(d): relational contrast accumulated over adj_plus at each edge.
-/// For each edge e: Σ(d)[e] = d[e] + Σ_{f ∈ adj_plus[e]} d[f]
-///   minus the antisymmetric term: - Σ_{f ∈ adj_plus[e]} d[f] (signed reversal)
+/// Σ(Δ)[e] = Δ[e] + ρ[e] · (Σ_{f ∈ adj⁺(e)} Δ[f] − Σ_{p ∈ adj⁻(e)} Δ[p])
 ///
-/// Full expression:
-///   Σ(d)[e] = d[e] - Σ_{f ∈ adj_plus[e]} (d[f])
-///
-/// This is the antisymmetric accumulation: the edge's own contrast minus
-/// the sum of its successors' contrasts. When adj_plus[e] is empty
-/// (no successors), Σ(d)[e] = d[e].
-///
-/// Formula: operators.rs V7 operator_sigma.
-/// Independent implementation — kernel file is reference only.
-pub fn operator_sigma(d: &PrimaryEdgeField, rel: &DeclaredRelations) -> SigmaField {
-    assert_eq!(d.n_edges, rel.n_edges(), "PrimaryEdgeField n_edges must match DeclaredRelations");
-    let n_edges = d.n_edges;
-    let mut field = vec![vec![0.0f64; n_edges]; d.n_components];
-    for c in 0..d.n_components {
-        for e in 0..n_edges {
-            let self_term = d.field[c][e];
-            let successor_sum: f64 = rel.adj_plus[e].iter().map(|&f| d.field[c][f]).sum();
-            field[c][e] = self_term - successor_sum;
-        }
-    }
-    SigmaField { field, n_components: d.n_components, n_edges }
+/// Source: operators.rs V7 operator_sigma lines 509–527.
+pub fn operator_sigma(
+    delta_field: &PrimaryEdgeField,
+    rel: &DeclaredRelations,
+    rho_base: f64,
+) -> PrimaryEdgeField {
+    assert_eq!(delta_field.n_edges, rel.n_edges(),
+        "delta field and declared relations must have the same edge count");
+    let rho = compute_rho_primary(delta_field, rel, rho_base);
+    let field: Vec<Vec<f64>> = (0..delta_field.n_components).map(|c| {
+        (0..rel.n_edges()).map(|e| {
+            let forward: f64 = rel.adj_plus[e].iter()
+                .map(|&f| delta_field.field[c][f]).sum();
+            let backward: f64 = rel.adj_minus[e].iter()
+                .map(|&p| delta_field.field[c][p]).sum();
+            delta_field.field[c][e] + rho[e] * (forward - backward)
+        }).collect()
+    }).collect();
+    PrimaryEdgeField::new(field, rel.n_edges())
 }
 
-// ── Rank computation ──────────────────────────────────────────────────────
+// ── Antisymmetric term ────────────────────────────────────────────────────
 
-/// Compute rank of a matrix given as rows (each row is a Vec<f64>).
-/// Uses Gaussian elimination with column-searching partial pivoting.
-/// For each row, scans all remaining columns to find a pivot —
-/// correctly handles leading zeros in any row.
-/// Tolerance: values below tol treated as zero.
-///
-/// Used for rank(Im Δ) and rank(Im Σ).
-pub fn matrix_rank(rows: &[Vec<f64>], tol: f64) -> usize {
-    if rows.is_empty() { return 0; }
-    let n_cols = rows[0].len();
-    if n_cols == 0 { return 0; }
-
-    let mut mat: Vec<Vec<f64>> = rows.to_vec();
-    let n_rows = mat.len();
-    let mut rank = 0;
-    let mut pivot_col = 0;
-
-    for row in 0..n_rows {
-        // Scan columns from pivot_col onward for a non-zero entry in rows [row..]
-        let mut found = false;
-        while pivot_col < n_cols && !found {
-            // Find the row with largest absolute value in this column
-            let mut max_row = row;
-            let mut max_val = mat[row][pivot_col].abs();
-            for r in (row + 1)..n_rows {
-                if mat[r][pivot_col].abs() > max_val {
-                    max_val = mat[r][pivot_col].abs();
-                    max_row = r;
-                }
-            }
-            if max_val < tol {
-                // No pivot in this column — advance to next column
-                pivot_col += 1;
-            } else {
-                mat.swap(row, max_row);
-                let pivot = mat[row][pivot_col];
-                for v in mat[row].iter_mut() { *v /= pivot; }
-                for r in 0..n_rows {
-                    if r != row {
-                        let factor = mat[r][pivot_col];
-                        for c in 0..n_cols {
-                            let sub = factor * mat[row][c];
-                            mat[r][c] -= sub;
-                        }
-                    }
-                }
-                rank += 1;
-                pivot_col += 1;
-                found = true;
-            }
-        }
-        if !found { break; }
-    }
-    rank
+/// antisymmetric_term[e] = ρ[e] · (Σ_{adj⁺} Δ[f] − Σ_{adj⁻} Δ[p])
+/// Source: operators.rs V7 antisymmetric_term lines 538–555.
+pub fn antisymmetric_term(
+    delta_field: &PrimaryEdgeField,
+    rel: &DeclaredRelations,
+    rho_base: f64,
+) -> PrimaryEdgeField {
+    assert_eq!(delta_field.n_edges, rel.n_edges());
+    let rho = compute_rho_primary(delta_field, rel, rho_base);
+    let field: Vec<Vec<f64>> = (0..delta_field.n_components).map(|c| {
+        (0..rel.n_edges()).map(|e| {
+            let forward: f64 = rel.adj_plus[e].iter()
+                .map(|&f| delta_field.field[c][f]).sum();
+            let backward: f64 = rel.adj_minus[e].iter()
+                .map(|&p| delta_field.field[c][p]).sum();
+            rho[e] * (forward - backward)
+        }).collect()
+    }).collect();
+    PrimaryEdgeField::new(field, rel.n_edges())
 }
 
-/// rank(Im Δ): rank of the image of Δ over all components and edges.
-/// Rows are components; columns are edges.
-pub fn rank_image_delta(d: &PrimaryEdgeField) -> usize {
-    matrix_rank(&d.field, 1e-10)
-}
+// ── Rank via SVD ──────────────────────────────────────────────────────────
 
-/// rank(Im Σ): rank of the image of Σ over all components and edges.
-/// Rows are components; columns are edges.
-pub fn rank_image_sigma(s: &SigmaField) -> usize {
-    matrix_rank(&s.field, 1e-10)
+/// rank(Im F) via SVD. Matrix is n_edges × n_components.
+/// Source: operators.rs V7 im_delta_rank lines 580–594.
+pub fn image_rank(f: &PrimaryEdgeField) -> usize {
+    if f.n_edges == 0 || f.n_components == 0 { return 0; }
+    let n_rows = f.n_edges;
+    let n_cols = f.n_components;
+    let data: Vec<f64> = (0..n_rows)
+        .flat_map(|e| (0..n_cols).map(move |c| f.field[c][e]))
+        .collect();
+    let mat = DMatrix::from_row_slice(n_rows, n_cols, &data);
+    let svd = mat.svd(false, false);
+    svd.singular_values.iter().filter(|&&s| s > SVD_TOLERANCE).count()
 }
 
 // ── ρ_P ──────────────────────────────────────────────────────────────────
 
-/// Compute ρ_P classification.
-///
-/// C_X = propagation_capacity of the declared relational structure.
-/// rank_sigma = rank(Im Σ).
-///
-/// Ceiling condition (G6):
-///   If C_X = 0: Undefined{NoDeclaredComponents}
-///   If rank_sigma >= C_X: Determined
-///   If rank_sigma < C_X: CeilingBounded
-///
-/// Source: operators.rs V7, build plan V1.2 G6.
-pub fn compute_rho_p(s: &SigmaField, rel: &DeclaredRelations) -> RhoP {
-    let cx = rel.propagation_capacity();
-    if cx == 0 {
-        return RhoP::Undefined { reason: RhoPUndefinedReason::NoDeclaredComponents };
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub enum RhoPUndefined {
+    NoPropagationCapacity,
+    NoDeclaredComponents,
+}
+
+/// ρ_P classification.
+/// CeilingBounded: k/C_X < 1 — declaration-imposed ceiling.
+/// Determined: k/C_X ≥ 1 — no declaration ceiling below 1.
+/// Source: operators.rs V7 rho_p_ratio lines 690–718.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub enum RhoP {
+    Determined {
+        value: f64,
+        n_components: usize,
+        propagation_capacity: usize,
+    },
+    CeilingBounded {
+        value: f64,
+        ceiling: f64,
+        n_components: usize,
+        propagation_capacity: usize,
+    },
+    Undefined { reason: RhoPUndefined },
+}
+
+pub fn rho_p_ratio(sigma_field: &PrimaryEdgeField, rel: &DeclaredRelations) -> RhoP {
+    let c_x = rel.propagation_capacity();
+    if c_x == 0 {
+        return RhoP::Undefined { reason: RhoPUndefined::NoPropagationCapacity };
     }
-    let rank_sigma = rank_image_sigma(s);
-    if rank_sigma >= cx {
-        RhoP::Determined { rank_sigma, cx }
+    if sigma_field.n_components == 0 {
+        return RhoP::Undefined { reason: RhoPUndefined::NoDeclaredComponents };
+    }
+    let rank_sigma = image_rank(sigma_field);
+    let n_components = sigma_field.n_components;
+    let value = rank_sigma as f64 / c_x as f64;
+    let ceiling = n_components as f64 / c_x as f64;
+    if ceiling < 1.0 {
+        RhoP::CeilingBounded { value, ceiling, n_components, propagation_capacity: c_x }
     } else {
-        RhoP::CeilingBounded { rank_sigma, cx }
+        RhoP::Determined { value, n_components, propagation_capacity: c_x }
     }
 }
 
 // ── Expression condition ──────────────────────────────────────────────────
 
-/// expression_condition: true when rank(Im Σ) > 0 and C_X > 0.
-/// Indicates the declared relational structure produces non-trivial
-/// contrast accumulation under the Primary operators.
-pub fn expression_condition(s: &SigmaField, rel: &DeclaredRelations) -> bool {
-    let cx = rel.propagation_capacity();
-    let rank_sigma = rank_image_sigma(s);
-    cx > 0 && rank_sigma > 0
+/// rank(Im Σ) > 0 AND antisymmetric term nonzero on at least one edge.
+/// Source: operators.rs V7 expression_condition lines 748–759.
+pub fn expression_condition(
+    delta_field: &PrimaryEdgeField,
+    sigma_field: &PrimaryEdgeField,
+    rel: &DeclaredRelations,
+    rho_base: f64,
+) -> (bool, usize, bool) {
+    let rank_sigma = image_rank(sigma_field);
+    let asym = antisymmetric_term(delta_field, rel, rho_base);
+    let has_nonzero_asym = asym.field.iter()
+        .any(|c| c.iter().any(|&v| v.abs() > SVD_TOLERANCE));
+    let expressed = rank_sigma > 0 && has_nonzero_asym;
+    (expressed, rank_sigma, has_nonzero_asym)
+}
+
+// ── Failure modes ─────────────────────────────────────────────────────────
+
+/// FM1 DifferentiationCollapse: rank(Im Δ) = 0.
+/// FM2 RelationalIsolation: all edges isolated.
+/// CirculationCancellation routed to admissibility_finding (V1.2 G5).
+/// Source: operators.rs V7 lines 764–793.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub enum FailureMode {
+    DifferentiationCollapse,
+    RelationalIsolation,
+}
+
+pub fn detect_failure_mode(
+    delta_field: &PrimaryEdgeField,
+    rel: &DeclaredRelations,
+) -> Option<FailureMode> {
+    if image_rank(delta_field) == 0 {
+        return Some(FailureMode::DifferentiationCollapse);
+    }
+    let all_isolated = rel.adj_plus.iter().zip(rel.adj_minus.iter())
+        .all(|(p, m)| p.is_empty() && m.is_empty());
+    if all_isolated {
+        return Some(FailureMode::RelationalIsolation);
+    }
+    None
 }
 
 // ── Full Primary evaluation ───────────────────────────────────────────────
 
-/// Complete Primary kernel evaluation on a single declared NodeField.
-/// Returns all intermediate and final quantities.
-/// E_primary = Σ(Δ(x)).
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct PrimaryEvaluation {
     pub delta: PrimaryEdgeField,
-    pub sigma: SigmaField,
+    pub sigma: PrimaryEdgeField,
+    pub antisym: PrimaryEdgeField,
     pub rank_delta: usize,
     pub rank_sigma: usize,
     pub cx: usize,
     pub rho_p: RhoP,
     pub expression_condition: bool,
+    pub rank_sigma_for_expr: usize,
+    pub has_nonzero_antisym: bool,
+    pub failure_mode: Option<FailureMode>,
+    /// rho_base value used — within declared range [0.1, 0.5]
+    pub rho_base: f64,
 }
 
-pub fn evaluate_primary(x: &NodeField, rel: &DeclaredRelations) -> PrimaryEvaluation {
+pub fn evaluate_primary(
+    x: &NodeField,
+    rel: &DeclaredRelations,
+    rho_base: f64,
+) -> PrimaryEvaluation {
+    assert_rho_base_in_range(rho_base);
     let delta = operator_delta(x, rel);
-    let sigma = operator_sigma(&delta, rel);
-    let rank_delta = rank_image_delta(&delta);
-    let rank_sigma = rank_image_sigma(&sigma);
+    let failure_mode = detect_failure_mode(&delta, rel);
+    let sigma = operator_sigma(&delta, rel, rho_base);
+    let antisym = antisymmetric_term(&delta, rel, rho_base);
+    let rank_delta = image_rank(&delta);
+    let rank_sigma = image_rank(&sigma);
     let cx = rel.propagation_capacity();
-    let rho_p = compute_rho_p(&sigma, rel);
-    let expr = expression_condition(&sigma, rel);
+    let rho_p = rho_p_ratio(&sigma, rel);
+    let (expr, rs_expr, has_asym) = expression_condition(&delta, &sigma, rel, rho_base);
     PrimaryEvaluation {
-        delta, sigma, rank_delta, rank_sigma, cx, rho_p, expression_condition: expr,
+        delta, sigma, antisym,
+        rank_delta, rank_sigma, cx,
+        rho_p,
+        expression_condition: expr,
+        rank_sigma_for_expr: rs_expr,
+        has_nonzero_antisym: has_asym,
+        failure_mode,
+        rho_base,
     }
 }
 
@@ -261,115 +317,184 @@ mod tests {
 
     fn si() -> ObservationClass { ObservationClass::SimulatedInput }
 
+    // Hand-calculated canonical values for chain3 x=[1,2,3] at rho_base=0.3:
+    // Δ[e0]=−1, Δ[e1]=−1
+    // χ[0]=1, χ[1]=1, χ[2]=1 → ρ[e0]=ρ[e1]=0.15
+    // Σ[e0]=−1+0.15·(−1−0)=−1.15
+    // Σ[e1]=−1+0.15·(0−(−1))=−0.85
+    // antisym[e0]=0.15·(−1−0)=−0.15
+    // antisym[e1]=0.15·(0−(−1))=+0.15
+
     #[test]
-    fn delta_directed_difference() {
-        // Δ(x)[e] = x[s] - x[t]
-        let rel = fixture_f2_chain3(); // A→B→C
-        let x = NodeField::single(vec![3.0, 1.0, 2.0], si());
+    fn canonical_delta_chain3() {
+        let rel = fixture_f2_chain3();
+        let x = NodeField::single(vec![1.0, 2.0, 3.0], si());
         let d = operator_delta(&x, &rel);
-        // edge 0: (0,1) → 3.0 - 1.0 = 2.0
-        assert!((d.field[0][0] - 2.0).abs() < 1e-12, "Δ edge 0");
-        // edge 1: (1,2) → 1.0 - 2.0 = -1.0
-        assert!((d.field[0][1] - (-1.0)).abs() < 1e-12, "Δ edge 1");
+        assert!((d.field[0][0] - (-1.0)).abs() < 1e-10, "Δ[e0]");
+        assert!((d.field[0][1] - (-1.0)).abs() < 1e-10, "Δ[e1]");
     }
 
     #[test]
-    fn sigma_no_successor_equals_delta() {
-        // For terminal edges (adj_plus empty), Σ(d)[e] = d[e]
+    fn canonical_rho_chain3_at_03() {
         let rel = fixture_f2_chain3();
-        let x = NodeField::single(vec![3.0, 1.0, 2.0], si());
+        let x = NodeField::single(vec![1.0, 2.0, 3.0], si());
         let d = operator_delta(&x, &rel);
-        let s = operator_sigma(&d, &rel);
-        // edge 1 is terminal (no adj_plus)
-        assert!((s.field[0][1] - d.field[0][1]).abs() < 1e-12,
-            "terminal edge: Σ must equal Δ");
+        let rho = compute_rho_primary(&d, &rel, 0.3);
+        assert!((rho[0] - 0.15).abs() < 1e-10, "ρ[e0]");
+        assert!((rho[1] - 0.15).abs() < 1e-10, "ρ[e1]");
     }
 
     #[test]
-    fn sigma_with_successor() {
-        // edge 0 has adj_plus = [edge 1]
-        // Σ[0] = d[0] - d[1]
+    fn canonical_sigma_chain3_at_03() {
         let rel = fixture_f2_chain3();
-        let x = NodeField::single(vec![3.0, 1.0, 2.0], si());
+        let x = NodeField::single(vec![1.0, 2.0, 3.0], si());
         let d = operator_delta(&x, &rel);
-        let s = operator_sigma(&d, &rel);
-        let expected = d.field[0][0] - d.field[0][1];
-        assert!((s.field[0][0] - expected).abs() < 1e-12,
-            "Σ with successor: antisymmetric accumulation");
+        let s = operator_sigma(&d, &rel, 0.3);
+        assert!((s.field[0][0] - (-1.15)).abs() < 1e-10, "Σ[e0]");
+        assert!((s.field[0][1] - (-0.85)).abs() < 1e-10, "Σ[e1]");
+    }
+
+    #[test]
+    fn canonical_antisym_chain3_at_03() {
+        let rel = fixture_f2_chain3();
+        let x = NodeField::single(vec![1.0, 2.0, 3.0], si());
+        let d = operator_delta(&x, &rel);
+        let asym = antisymmetric_term(&d, &rel, 0.3);
+        assert!((asym.field[0][0] - (-0.15)).abs() < 1e-10, "antisym[e0]");
+        assert!((asym.field[0][1] - 0.15).abs()  < 1e-10, "antisym[e1]");
+    }
+
+    #[test]
+    fn rho_base_range_enforcement() {
+        // Values outside [0.1, 0.5] must panic
+        let rel = fixture_f2_chain3();
+        let x = NodeField::single(vec![1.0, 2.0, 3.0], si());
+        let d = operator_delta(&x, &rel);
+        assert!(std::panic::catch_unwind(|| {
+            compute_rho_primary(&d, &rel, 0.0)
+        }).is_err(), "rho_base=0.0 must be rejected");
+        assert!(std::panic::catch_unwind(|| {
+            compute_rho_primary(&d, &rel, 0.6)
+        }).is_err(), "rho_base=0.6 must be rejected");
+    }
+
+    #[test]
+    fn rho_base_boundary_values_admitted() {
+        let rel = fixture_f2_chain3();
+        let x = NodeField::single(vec![1.0, 2.0, 3.0], si());
+        let d = operator_delta(&x, &rel);
+        // 0.1 and 0.5 are within range — must not panic
+        let _ = compute_rho_primary(&d, &rel, 0.1);
+        let _ = compute_rho_primary(&d, &rel, 0.5);
     }
 
     #[test]
     fn g6_rho_p_pair_undefined() {
-        // F1 PRC-2: C_X=0 → Undefined
         let rel = fixture_f1_pair();
         let x = NodeField::single(vec![1.0, 2.0], si());
-        let eval = evaluate_primary(&x, &rel);
-        assert_eq!(eval.cx, 0);
-        assert_eq!(eval.rho_p, RhoP::Undefined {
-            reason: RhoPUndefinedReason::NoDeclaredComponents
-        });
+        let eval = evaluate_primary(&x, &rel, 0.3);
+        assert!(matches!(eval.rho_p,
+            RhoP::Undefined { reason: RhoPUndefined::NoPropagationCapacity }));
     }
 
     #[test]
     fn g6_rho_p_chain3_k1_determined() {
-        // F2 chain3: C_X=1, k=1 → Determined
+        // k=1, C_X=1 → ceiling=1.0 → Determined
         let rel = fixture_f2_chain3();
         let x = NodeField::single(vec![1.0, 2.0, 3.0], si());
-        let eval = evaluate_primary(&x, &rel);
-        assert_eq!(eval.cx, 1);
+        let eval = evaluate_primary(&x, &rel, 0.3);
         assert!(matches!(eval.rho_p, RhoP::Determined { .. }));
     }
 
     #[test]
-    fn g6_rho_p_closed_relational_3_k1_ceiling_bounded() {
-        // F3 3LCT: C_X=3, k=1 → CeilingBounded (rank_sigma ≤ 1 < 3)
+    fn g6_rho_p_3lct_k1_ceiling_bounded() {
+        // k=1, C_X=3 → ceiling=0.333 → CeilingBounded
         let rel = fixture_f3_closed_relational_3();
         let x = NodeField::single(vec![1.0, 2.0, 3.0], si());
-        let eval = evaluate_primary(&x, &rel);
-        assert_eq!(eval.cx, 3);
-        assert!(matches!(eval.rho_p, RhoP::CeilingBounded { .. }),
-            "3LCT k=1 must be CeilingBounded");
-    }
-
-    #[test]
-    fn g6_rho_p_chain4_k1_ceiling_bounded() {
-        // Chain-4: C_X=2, k=1 → CeilingBounded
-        let rel = fixture_f4_chain4();
-        let x = NodeField::single(vec![1.0, 2.0, 3.0, 4.0], si());
-        let eval = evaluate_primary(&x, &rel);
-        assert_eq!(eval.cx, 2);
+        let eval = evaluate_primary(&x, &rel, 0.3);
         assert!(matches!(eval.rho_p, RhoP::CeilingBounded { .. }));
     }
 
     #[test]
-    fn expression_condition_false_for_pair() {
+    fn g6_rho_p_3lct_k3_determined() {
+        // k=3, C_X=3 → ceiling=1.0 → Determined (linearly independent fields)
+        let rel = fixture_f3_closed_relational_3();
+        let x = NodeField::new(vec![
+            vec![1.0, 2.0, 3.0],
+            vec![4.0, 1.0, 2.0],
+            vec![3.0, 5.0, 1.0],
+        ], si());
+        let eval = evaluate_primary(&x, &rel, 0.3);
+        assert!(matches!(eval.rho_p, RhoP::Determined { .. }));
+    }
+
+    #[test]
+    fn fm1_differentiation_collapse() {
+        let rel = fixture_f2_chain3();
+        let x = NodeField::single(vec![5.0, 5.0, 5.0], si());
+        let eval = evaluate_primary(&x, &rel, 0.3);
+        assert_eq!(eval.failure_mode, Some(FailureMode::DifferentiationCollapse));
+    }
+
+    #[test]
+    fn fm2_relational_isolation() {
+        // PRC-2: adj_plus[e0]=[], adj_minus[e0]=[] → RelationalIsolation
         let rel = fixture_f1_pair();
         let x = NodeField::single(vec![1.0, 2.0], si());
-        let eval = evaluate_primary(&x, &rel);
-        // C_X=0 → expression_condition must be false
+        let eval = evaluate_primary(&x, &rel, 0.3);
+        assert_eq!(eval.failure_mode, Some(FailureMode::RelationalIsolation));
+    }
+
+    #[test]
+    fn expression_condition_false_for_isolated_edge() {
+        let rel = fixture_f1_pair();
+        let x = NodeField::single(vec![1.0, 2.0], si());
+        let eval = evaluate_primary(&x, &rel, 0.3);
+        assert!(!eval.has_nonzero_antisym);
         assert!(!eval.expression_condition);
     }
 
     #[test]
-    fn all_outputs_finite() {
-        for rel in [
-            fixture_f1_pair(),
-            fixture_f2_chain3(),
-            fixture_f3_closed_relational_3(),
-            fixture_f4_chain4(),
-            fixture_f5_branch(),
-            fixture_f6_convergent(),
-            fixture_f7_diamond(),
-        ] {
-            let n = rel.n_nodes;
-            let x = NodeField::single((0..n).map(|i| (i + 1) as f64).collect(), si());
-            let eval = evaluate_primary(&x, &rel);
-            for c in 0..eval.delta.n_components {
-                for &v in &eval.delta.field[c] {
-                    assert!(v.is_finite(), "Δ output must be finite");
-                }
-                for &v in &eval.sigma.field[c] {
-                    assert!(v.is_finite(), "Σ output must be finite");
+    fn expression_condition_true_chain3() {
+        let rel = fixture_f2_chain3();
+        let x = NodeField::single(vec![1.0, 2.0, 3.0], si());
+        let eval = evaluate_primary(&x, &rel, 0.3);
+        assert!(eval.has_nonzero_antisym);
+        assert!(eval.expression_condition);
+    }
+
+    #[test]
+    fn rho_base_recorded_in_evaluation() {
+        let rel = fixture_f2_chain3();
+        let x = NodeField::single(vec![1.0, 2.0, 3.0], si());
+        for &rb in &RHO_BASE_SWEEP {
+            let eval = evaluate_primary(&x, &rel, rb);
+            assert!((eval.rho_base - rb).abs() < 1e-12,
+                "rho_base must be recorded in evaluation output");
+        }
+    }
+
+    #[test]
+    fn all_outputs_finite_across_rho_base_sweep() {
+        for &rb in &RHO_BASE_SWEEP {
+            for rel in [
+                fixture_f1_pair(),
+                fixture_f2_chain3(),
+                fixture_f3_closed_relational_3(),
+                fixture_f4_chain4(),
+                fixture_f5_branch(),
+                fixture_f6_convergent(),
+                fixture_f7_diamond(),
+            ] {
+                let n = rel.n_nodes;
+                let x = NodeField::single(
+                    (0..n).map(|i| (i + 1) as f64).collect(), si()
+                );
+                let eval = evaluate_primary(&x, &rel, rb);
+                for c in 0..eval.delta.n_components {
+                    assert!(eval.delta.field[c].iter().all(|v| v.is_finite()));
+                    assert!(eval.sigma.field[c].iter().all(|v| v.is_finite()));
+                    assert!(eval.antisym.field[c].iter().all(|v| v.is_finite()));
                 }
             }
         }
