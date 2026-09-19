@@ -1,0 +1,1028 @@
+{
+  "declaration": {
+    "E_UNIT_C": 1.602176634e-19,
+    "charge_relation": "q[v] = n[v] * E_UNIT",
+    "loci": [
+      "Q_A",
+      "Q_B",
+      "Q_C"
+    ],
+    "observable": "electron occupation n[v] in {0, 1}",
+    "observation_class": "SimulatedInput",
+    "physical_claim": "none — simulation experiment only",
+    "rho_base": 0.3,
+    "rho_base_range": [
+      0.1,
+      0.5
+    ]
+  },
+  "experiment": "quantum_dot_loci_simulation",
+  "records": [
+    {
+      "admissibility_finding": null,
+      "antisym_values": [
+        [
+          0.0,
+          -0.15
+        ]
+      ],
+      "cx": 1,
+      "cycle_detected": false,
+      "delta_values": [
+        [
+          1.0,
+          0.0
+        ]
+      ],
+      "expression_condition": true,
+      "failure_mode": null,
+      "fixture_id": "chain_[1,0,",
+      "has_nonzero_antisym": true,
+      "k": 1,
+      "n_edges": 2,
+      "n_nodes": 3,
+      "observation_class": "SimulatedInput",
+      "rank_delta": 1,
+      "rank_sigma": 1,
+      "rank_sigma_for_expr": 1,
+      "rho_base": 0.3,
+      "rho_p": {
+        "Determined": {
+          "n_components": 1,
+          "propagation_capacity": 1,
+          "value": 1.0
+        }
+      },
+      "sigma_values": [
+        [
+          1.0,
+          -0.15
+        ]
+      ],
+      "topology_label": "Chain3"
+    },
+    {
+      "admissibility_finding": null,
+      "antisym_values": [
+        [
+          0.15,
+          -0.3,
+          0.15
+        ]
+      ],
+      "cx": 3,
+      "cycle_detected": true,
+      "delta_values": [
+        [
+          1.0,
+          0.0,
+          -1.0
+        ]
+      ],
+      "expression_condition": true,
+      "failure_mode": null,
+      "fixture_id": "closed_[1,0,",
+      "has_nonzero_antisym": true,
+      "k": 1,
+      "n_edges": 3,
+      "n_nodes": 3,
+      "observation_class": "SimulatedInput",
+      "rank_delta": 1,
+      "rank_sigma": 1,
+      "rank_sigma_for_expr": 1,
+      "rho_base": 0.3,
+      "rho_p": {
+        "CeilingBounded": {
+          "ceiling": 0.3333333333333333,
+          "n_components": 1,
+          "propagation_capacity": 3,
+          "value": 0.3333333333333333
+        }
+      },
+      "sigma_values": [
+        [
+          1.15,
+          -0.3,
+          -0.85
+        ]
+      ],
+      "topology_label": "ClosedRelational3"
+    },
+    {
+      "admissibility_finding": null,
+      "antisym_values": [
+        [
+          0.15,
+          0.15
+        ]
+      ],
+      "cx": 1,
+      "cycle_detected": false,
+      "delta_values": [
+        [
+          -1.0,
+          1.0
+        ]
+      ],
+      "expression_condition": true,
+      "failure_mode": null,
+      "fixture_id": "chain_[0,1,",
+      "has_nonzero_antisym": true,
+      "k": 1,
+      "n_edges": 2,
+      "n_nodes": 3,
+      "observation_class": "SimulatedInput",
+      "rank_delta": 1,
+      "rank_sigma": 1,
+      "rank_sigma_for_expr": 1,
+      "rho_base": 0.3,
+      "rho_p": {
+        "Determined": {
+          "n_components": 1,
+          "propagation_capacity": 1,
+          "value": 1.0
+        }
+      },
+      "sigma_values": [
+        [
+          -0.85,
+          1.15
+        ]
+      ],
+      "topology_label": "Chain3"
+    },
+    {
+      "admissibility_finding": null,
+      "antisym_values": [
+        [
+          0.15,
+          0.15,
+          -0.3
+        ]
+      ],
+      "cx": 3,
+      "cycle_detected": true,
+      "delta_values": [
+        [
+          -1.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "expression_condition": true,
+      "failure_mode": null,
+      "fixture_id": "closed_[0,1,",
+      "has_nonzero_antisym": true,
+      "k": 1,
+      "n_edges": 3,
+      "n_nodes": 3,
+      "observation_class": "SimulatedInput",
+      "rank_delta": 1,
+      "rank_sigma": 1,
+      "rank_sigma_for_expr": 1,
+      "rho_base": 0.3,
+      "rho_p": {
+        "CeilingBounded": {
+          "ceiling": 0.3333333333333333,
+          "n_components": 1,
+          "propagation_capacity": 3,
+          "value": 0.3333333333333333
+        }
+      },
+      "sigma_values": [
+        [
+          -0.85,
+          1.15,
+          -0.3
+        ]
+      ],
+      "topology_label": "ClosedRelational3"
+    },
+    {
+      "admissibility_finding": "CirculationCancellation",
+      "antisym_values": [
+        [
+          -0.0,
+          -0.0
+        ]
+      ],
+      "cx": 1,
+      "cycle_detected": false,
+      "delta_values": [
+        [
+          0.0,
+          -1.0
+        ]
+      ],
+      "expression_condition": false,
+      "failure_mode": null,
+      "fixture_id": "chain_[0,0,",
+      "has_nonzero_antisym": false,
+      "k": 1,
+      "n_edges": 2,
+      "n_nodes": 3,
+      "observation_class": "SimulatedInput",
+      "rank_delta": 1,
+      "rank_sigma": 1,
+      "rank_sigma_for_expr": 1,
+      "rho_base": 0.3,
+      "rho_p": {
+        "Determined": {
+          "n_components": 1,
+          "propagation_capacity": 1,
+          "value": 1.0
+        }
+      },
+      "sigma_values": [
+        [
+          0.0,
+          -1.0
+        ]
+      ],
+      "topology_label": "Chain3"
+    },
+    {
+      "admissibility_finding": null,
+      "antisym_values": [
+        [
+          -0.3,
+          0.15,
+          0.15
+        ]
+      ],
+      "cx": 3,
+      "cycle_detected": true,
+      "delta_values": [
+        [
+          0.0,
+          -1.0,
+          1.0
+        ]
+      ],
+      "expression_condition": true,
+      "failure_mode": null,
+      "fixture_id": "closed_[0,0,",
+      "has_nonzero_antisym": true,
+      "k": 1,
+      "n_edges": 3,
+      "n_nodes": 3,
+      "observation_class": "SimulatedInput",
+      "rank_delta": 1,
+      "rank_sigma": 1,
+      "rank_sigma_for_expr": 1,
+      "rho_base": 0.3,
+      "rho_p": {
+        "CeilingBounded": {
+          "ceiling": 0.3333333333333333,
+          "n_components": 1,
+          "propagation_capacity": 3,
+          "value": 0.3333333333333333
+        }
+      },
+      "sigma_values": [
+        [
+          -0.3,
+          -0.85,
+          1.15
+        ]
+      ],
+      "topology_label": "ClosedRelational3"
+    },
+    {
+      "admissibility_finding": null,
+      "antisym_values": [
+        [
+          0.0,
+          -0.15
+        ]
+      ],
+      "cx": 1,
+      "cycle_detected": false,
+      "delta_values": [
+        [
+          1.0,
+          0.0
+        ]
+      ],
+      "expression_condition": true,
+      "failure_mode": null,
+      "fixture_id": "E2_base",
+      "has_nonzero_antisym": true,
+      "k": 1,
+      "n_edges": 2,
+      "n_nodes": 3,
+      "observation_class": "SimulatedInput",
+      "rank_delta": 1,
+      "rank_sigma": 1,
+      "rank_sigma_for_expr": 1,
+      "rho_base": 0.3,
+      "rho_p": {
+        "Determined": {
+          "n_components": 1,
+          "propagation_capacity": 1,
+          "value": 1.0
+        }
+      },
+      "sigma_values": [
+        [
+          1.0,
+          -0.15
+        ]
+      ],
+      "topology_label": "Chain3"
+    },
+    {
+      "admissibility_finding": null,
+      "antisym_values": [
+        [
+          0.0,
+          -0.27
+        ]
+      ],
+      "cx": 1,
+      "cycle_detected": false,
+      "delta_values": [
+        [
+          1.5,
+          0.0
+        ]
+      ],
+      "expression_condition": true,
+      "failure_mode": null,
+      "fixture_id": "E2_dist",
+      "has_nonzero_antisym": true,
+      "k": 1,
+      "n_edges": 2,
+      "n_nodes": 3,
+      "observation_class": "SimulatedInput",
+      "rank_delta": 1,
+      "rank_sigma": 1,
+      "rank_sigma_for_expr": 1,
+      "rho_base": 0.3,
+      "rho_p": {
+        "Determined": {
+          "n_components": 1,
+          "propagation_capacity": 1,
+          "value": 1.0
+        }
+      },
+      "sigma_values": [
+        [
+          1.5,
+          -0.27
+        ]
+      ],
+      "topology_label": "Chain3"
+    },
+    {
+      "admissibility_finding": null,
+      "antisym_values": [
+        [
+          0.15,
+          -0.3,
+          0.15
+        ]
+      ],
+      "cx": 3,
+      "cycle_detected": true,
+      "delta_values": [
+        [
+          1.0,
+          0.0,
+          -1.0
+        ]
+      ],
+      "expression_condition": true,
+      "failure_mode": null,
+      "fixture_id": "E2_base",
+      "has_nonzero_antisym": true,
+      "k": 1,
+      "n_edges": 3,
+      "n_nodes": 3,
+      "observation_class": "SimulatedInput",
+      "rank_delta": 1,
+      "rank_sigma": 1,
+      "rank_sigma_for_expr": 1,
+      "rho_base": 0.3,
+      "rho_p": {
+        "CeilingBounded": {
+          "ceiling": 0.3333333333333333,
+          "n_components": 1,
+          "propagation_capacity": 3,
+          "value": 0.3333333333333333
+        }
+      },
+      "sigma_values": [
+        [
+          1.15,
+          -0.3,
+          -0.85
+        ]
+      ],
+      "topology_label": "ClosedRelational3"
+    },
+    {
+      "admissibility_finding": null,
+      "antisym_values": [
+        [
+          0.27,
+          -0.54,
+          0.27
+        ]
+      ],
+      "cx": 3,
+      "cycle_detected": true,
+      "delta_values": [
+        [
+          1.5,
+          0.0,
+          -1.5
+        ]
+      ],
+      "expression_condition": true,
+      "failure_mode": null,
+      "fixture_id": "E2_dist",
+      "has_nonzero_antisym": true,
+      "k": 1,
+      "n_edges": 3,
+      "n_nodes": 3,
+      "observation_class": "SimulatedInput",
+      "rank_delta": 1,
+      "rank_sigma": 1,
+      "rank_sigma_for_expr": 1,
+      "rho_base": 0.3,
+      "rho_p": {
+        "CeilingBounded": {
+          "ceiling": 0.3333333333333333,
+          "n_components": 1,
+          "propagation_capacity": 3,
+          "value": 0.3333333333333333
+        }
+      },
+      "sigma_values": [
+        [
+          1.77,
+          -0.54,
+          -1.23
+        ]
+      ],
+      "topology_label": "ClosedRelational3"
+    },
+    {
+      "admissibility_finding": "CirculationCancellation",
+      "antisym_values": [
+        [
+          0.0,
+          -0.0
+        ]
+      ],
+      "cx": 1,
+      "cycle_detected": false,
+      "delta_values": [
+        [
+          0.0,
+          1.0
+        ]
+      ],
+      "expression_condition": false,
+      "failure_mode": null,
+      "fixture_id": "A_chain_11.000",
+      "has_nonzero_antisym": false,
+      "k": 1,
+      "n_edges": 2,
+      "n_nodes": 3,
+      "observation_class": "SimulatedInput",
+      "rank_delta": 1,
+      "rank_sigma": 1,
+      "rank_sigma_for_expr": 1,
+      "rho_base": 0.3,
+      "rho_p": {
+        "Determined": {
+          "n_components": 1,
+          "propagation_capacity": 1,
+          "value": 1.0
+        }
+      },
+      "sigma_values": [
+        [
+          0.0,
+          1.0
+        ]
+      ],
+      "topology_label": "Chain3"
+    },
+    {
+      "admissibility_finding": null,
+      "antisym_values": [
+        [
+          0.3,
+          -0.15,
+          -0.15
+        ]
+      ],
+      "cx": 3,
+      "cycle_detected": true,
+      "delta_values": [
+        [
+          0.0,
+          1.0,
+          -1.0
+        ]
+      ],
+      "expression_condition": true,
+      "failure_mode": null,
+      "fixture_id": "A_closed_11.000",
+      "has_nonzero_antisym": true,
+      "k": 1,
+      "n_edges": 3,
+      "n_nodes": 3,
+      "observation_class": "SimulatedInput",
+      "rank_delta": 1,
+      "rank_sigma": 1,
+      "rank_sigma_for_expr": 1,
+      "rho_base": 0.3,
+      "rho_p": {
+        "CeilingBounded": {
+          "ceiling": 0.3333333333333333,
+          "n_components": 1,
+          "propagation_capacity": 3,
+          "value": 0.3333333333333333
+        }
+      },
+      "sigma_values": [
+        [
+          0.3,
+          0.85,
+          -1.15
+        ]
+      ],
+      "topology_label": "ClosedRelational3"
+    },
+    {
+      "admissibility_finding": null,
+      "antisym_values": [
+        [
+          -0.15,
+          -0.15
+        ]
+      ],
+      "cx": 1,
+      "cycle_detected": false,
+      "delta_values": [
+        [
+          1.0,
+          -1.0
+        ]
+      ],
+      "expression_condition": true,
+      "failure_mode": null,
+      "fixture_id": "A_chain_101.000",
+      "has_nonzero_antisym": true,
+      "k": 1,
+      "n_edges": 2,
+      "n_nodes": 3,
+      "observation_class": "SimulatedInput",
+      "rank_delta": 1,
+      "rank_sigma": 1,
+      "rank_sigma_for_expr": 1,
+      "rho_base": 0.3,
+      "rho_p": {
+        "Determined": {
+          "n_components": 1,
+          "propagation_capacity": 1,
+          "value": 1.0
+        }
+      },
+      "sigma_values": [
+        [
+          0.85,
+          -1.15
+        ]
+      ],
+      "topology_label": "Chain3"
+    },
+    {
+      "admissibility_finding": null,
+      "antisym_values": [
+        [
+          -0.15,
+          -0.15,
+          0.3
+        ]
+      ],
+      "cx": 3,
+      "cycle_detected": true,
+      "delta_values": [
+        [
+          1.0,
+          -1.0,
+          0.0
+        ]
+      ],
+      "expression_condition": true,
+      "failure_mode": null,
+      "fixture_id": "A_closed_101.000",
+      "has_nonzero_antisym": true,
+      "k": 1,
+      "n_edges": 3,
+      "n_nodes": 3,
+      "observation_class": "SimulatedInput",
+      "rank_delta": 1,
+      "rank_sigma": 1,
+      "rank_sigma_for_expr": 1,
+      "rho_base": 0.3,
+      "rho_p": {
+        "CeilingBounded": {
+          "ceiling": 0.3333333333333333,
+          "n_components": 1,
+          "propagation_capacity": 3,
+          "value": 0.3333333333333333
+        }
+      },
+      "sigma_values": [
+        [
+          0.85,
+          -1.15,
+          0.3
+        ]
+      ],
+      "topology_label": "ClosedRelational3"
+    },
+    {
+      "admissibility_finding": null,
+      "antisym_values": [
+        [
+          0.0,
+          0.15
+        ]
+      ],
+      "cx": 1,
+      "cycle_detected": false,
+      "delta_values": [
+        [
+          -1.0,
+          0.0
+        ]
+      ],
+      "expression_condition": true,
+      "failure_mode": null,
+      "fixture_id": "A_chain_110.000",
+      "has_nonzero_antisym": true,
+      "k": 1,
+      "n_edges": 2,
+      "n_nodes": 3,
+      "observation_class": "SimulatedInput",
+      "rank_delta": 1,
+      "rank_sigma": 1,
+      "rank_sigma_for_expr": 1,
+      "rho_base": 0.3,
+      "rho_p": {
+        "Determined": {
+          "n_components": 1,
+          "propagation_capacity": 1,
+          "value": 1.0
+        }
+      },
+      "sigma_values": [
+        [
+          -1.0,
+          0.15
+        ]
+      ],
+      "topology_label": "Chain3"
+    },
+    {
+      "admissibility_finding": null,
+      "antisym_values": [
+        [
+          -0.15,
+          0.3,
+          -0.15
+        ]
+      ],
+      "cx": 3,
+      "cycle_detected": true,
+      "delta_values": [
+        [
+          -1.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "expression_condition": true,
+      "failure_mode": null,
+      "fixture_id": "A_closed_110.000",
+      "has_nonzero_antisym": true,
+      "k": 1,
+      "n_edges": 3,
+      "n_nodes": 3,
+      "observation_class": "SimulatedInput",
+      "rank_delta": 1,
+      "rank_sigma": 1,
+      "rank_sigma_for_expr": 1,
+      "rho_base": 0.3,
+      "rho_p": {
+        "CeilingBounded": {
+          "ceiling": 0.3333333333333333,
+          "n_components": 1,
+          "propagation_capacity": 3,
+          "value": 0.3333333333333333
+        }
+      },
+      "sigma_values": [
+        [
+          -1.15,
+          0.3,
+          0.85
+        ]
+      ],
+      "topology_label": "ClosedRelational3"
+    },
+    {
+      "admissibility_finding": "CirculationCancellation",
+      "antisym_values": [
+        [
+          0.0,
+          -0.0
+        ]
+      ],
+      "cx": 1,
+      "cycle_detected": false,
+      "delta_values": [
+        [
+          0.0,
+          0.0
+        ]
+      ],
+      "expression_condition": false,
+      "failure_mode": "DifferentiationCollapse",
+      "fixture_id": "A_chain_111.000",
+      "has_nonzero_antisym": false,
+      "k": 1,
+      "n_edges": 2,
+      "n_nodes": 3,
+      "observation_class": "SimulatedInput",
+      "rank_delta": 0,
+      "rank_sigma": 0,
+      "rank_sigma_for_expr": 0,
+      "rho_base": 0.3,
+      "rho_p": {
+        "Determined": {
+          "n_components": 1,
+          "propagation_capacity": 1,
+          "value": 0.0
+        }
+      },
+      "sigma_values": [
+        [
+          0.0,
+          0.0
+        ]
+      ],
+      "topology_label": "Chain3"
+    },
+    {
+      "admissibility_finding": "CirculationCancellation",
+      "antisym_values": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "cx": 3,
+      "cycle_detected": true,
+      "delta_values": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "expression_condition": false,
+      "failure_mode": "DifferentiationCollapse",
+      "fixture_id": "A_closed_111.000",
+      "has_nonzero_antisym": false,
+      "k": 1,
+      "n_edges": 3,
+      "n_nodes": 3,
+      "observation_class": "SimulatedInput",
+      "rank_delta": 0,
+      "rank_sigma": 0,
+      "rank_sigma_for_expr": 0,
+      "rho_base": 0.3,
+      "rho_p": {
+        "CeilingBounded": {
+          "ceiling": 0.3333333333333333,
+          "n_components": 1,
+          "propagation_capacity": 3,
+          "value": 0.0
+        }
+      },
+      "sigma_values": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "topology_label": "ClosedRelational3"
+    },
+    {
+      "admissibility_finding": null,
+      "antisym_values": [
+        [
+          -0.15,
+          0.3,
+          -0.15
+        ]
+      ],
+      "cx": 3,
+      "cycle_detected": true,
+      "delta_values": [
+        [
+          -1.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "expression_condition": true,
+      "failure_mode": null,
+      "fixture_id": "shuttle_step 1",
+      "has_nonzero_antisym": true,
+      "k": 1,
+      "n_edges": 3,
+      "n_nodes": 3,
+      "observation_class": "SimulatedInput",
+      "rank_delta": 1,
+      "rank_sigma": 1,
+      "rank_sigma_for_expr": 1,
+      "rho_base": 0.3,
+      "rho_p": {
+        "CeilingBounded": {
+          "ceiling": 0.3333333333333333,
+          "n_components": 1,
+          "propagation_capacity": 3,
+          "value": 0.3333333333333333
+        }
+      },
+      "sigma_values": [
+        [
+          -1.15,
+          0.3,
+          0.85
+        ]
+      ],
+      "topology_label": "ClosedRelational3"
+    },
+    {
+      "admissibility_finding": null,
+      "antisym_values": [
+        [
+          -0.15,
+          -0.15,
+          0.3
+        ]
+      ],
+      "cx": 3,
+      "cycle_detected": true,
+      "delta_values": [
+        [
+          1.0,
+          -1.0,
+          0.0
+        ]
+      ],
+      "expression_condition": true,
+      "failure_mode": null,
+      "fixture_id": "shuttle_step 2",
+      "has_nonzero_antisym": true,
+      "k": 1,
+      "n_edges": 3,
+      "n_nodes": 3,
+      "observation_class": "SimulatedInput",
+      "rank_delta": 1,
+      "rank_sigma": 1,
+      "rank_sigma_for_expr": 1,
+      "rho_base": 0.3,
+      "rho_p": {
+        "CeilingBounded": {
+          "ceiling": 0.3333333333333333,
+          "n_components": 1,
+          "propagation_capacity": 3,
+          "value": 0.3333333333333333
+        }
+      },
+      "sigma_values": [
+        [
+          0.85,
+          -1.15,
+          0.3
+        ]
+      ],
+      "topology_label": "ClosedRelational3"
+    },
+    {
+      "admissibility_finding": null,
+      "antisym_values": [
+        [
+          0.3,
+          -0.15,
+          -0.15
+        ]
+      ],
+      "cx": 3,
+      "cycle_detected": true,
+      "delta_values": [
+        [
+          0.0,
+          1.0,
+          -1.0
+        ]
+      ],
+      "expression_condition": true,
+      "failure_mode": null,
+      "fixture_id": "shuttle_step 3",
+      "has_nonzero_antisym": true,
+      "k": 1,
+      "n_edges": 3,
+      "n_nodes": 3,
+      "observation_class": "SimulatedInput",
+      "rank_delta": 1,
+      "rank_sigma": 1,
+      "rank_sigma_for_expr": 1,
+      "rho_base": 0.3,
+      "rho_p": {
+        "CeilingBounded": {
+          "ceiling": 0.3333333333333333,
+          "n_components": 1,
+          "propagation_capacity": 3,
+          "value": 0.3333333333333333
+        }
+      },
+      "sigma_values": [
+        [
+          0.3,
+          0.85,
+          -1.15
+        ]
+      ],
+      "topology_label": "ClosedRelational3"
+    },
+    {
+      "admissibility_finding": null,
+      "antisym_values": [
+        [
+          -0.15,
+          0.3,
+          -0.15
+        ]
+      ],
+      "cx": 3,
+      "cycle_detected": true,
+      "delta_values": [
+        [
+          -1.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "expression_condition": true,
+      "failure_mode": null,
+      "fixture_id": "shuttle_step 4",
+      "has_nonzero_antisym": true,
+      "k": 1,
+      "n_edges": 3,
+      "n_nodes": 3,
+      "observation_class": "SimulatedInput",
+      "rank_delta": 1,
+      "rank_sigma": 1,
+      "rank_sigma_for_expr": 1,
+      "rho_base": 0.3,
+      "rho_p": {
+        "CeilingBounded": {
+          "ceiling": 0.3333333333333333,
+          "n_components": 1,
+          "propagation_capacity": 3,
+          "value": 0.3333333333333333
+        }
+      },
+      "sigma_values": [
+        [
+          -1.15,
+          0.3,
+          0.85
+        ]
+      ],
+      "topology_label": "ClosedRelational3"
+    }
+  ],
+  "simulator": "abr-primary-relational-cell V0.1.3",
+  "source_record": {
+    "doi": "10.1038/s41467-020-20280-3",
+    "journal": "Nature Communications 11, 6399",
+    "note": "Experiment 3 states drawn from this record. Physical M_in for device correspondence declared separately in Phase 0 V3.",
+    "paper": "Ansaloni et al. (2020)"
+  },
+  "timestamp": "20260918_205645"
+}
