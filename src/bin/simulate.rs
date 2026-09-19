@@ -1,5 +1,5 @@
 // simulate.rs — Metatron Dynamics, Inc.
-// abr-primary-relational-cell V0.1.2
+// abr-primary-relational-cell V0.1.3
 // Convention build — WeAreDevelopers San Jose
 //
 // Runs all ten fixtures across the full declared rho_base range [0.1, 0.5]
@@ -68,17 +68,17 @@ fn main() {
 
     println!();
     println!("╔══════════════════════════════════════════════════════════════════════════════════════════════════╗");
-    println!("║  ABR Primary Relational Cell Simulator — V0.1.2                                                ║");
+    println!("║  ABR Primary Relational Cell Simulator — V0.1.3                                                ║");
     println!("║  Metatron Dynamics, Inc. — WeAreDevelopers San Jose                                            ║");
     println!("║  Kernel: operators.rs V7 | derived_invariants.rs V4.1 | Build plan V1.2                        ║");
     println!("║  B absent. Physical fabrication not claimed.                                                    ║");
     println!("╚══════════════════════════════════════════════════════════════════════════════════════════════════╝");
     println!();
     println!("  Origin declaration — rho_base:");
-    println!("    Admissible Primary Region range: [{}, {}]", RHO_BASE_MIN, RHO_BASE_MAX);
-    println!("    Rationale: lower bound preserves nonzero antisymmetric term;");
-    println!("               upper bound keeps ρ_P ≪ 1 (Primary Region, below OC-ρP-1 threshold).");
-    println!("    Convention sweep: {:?}", RHO_BASE_SWEEP);
+    println!("    rho_base: edge-local coupling coefficient for antisymmetric term of Sigma.");
+    println!("    Distinct from rho_P = rank(Im Sigma) / C_X — rho_base does not control rho_P.");
+    println!("    Convention parameter sweep: {:?}", RHO_BASE_SWEEP);
+    println!("    No regime interpretation of this range is asserted.");
     println!();
 
     let mut all_records: Vec<serde_json::Value> = vec![];
@@ -195,7 +195,7 @@ fn main() {
     // ── Write JSON run record ─────────────────────────────────────────────
     let run_record = serde_json::json!({
         "simulator": "abr-primary-relational-cell",
-        "version": "V0.1.2",
+        "version": "V0.1.3",
         "build_plan": "V1.2",
         "kernel_authority": "operators.rs V7 / derived_invariants.rs V4.1",
         "timestamp": timestamp,
@@ -208,13 +208,13 @@ fn main() {
             "date": "2026-09-18",
             "admissible_range": [RHO_BASE_MIN, RHO_BASE_MAX],
             "convention_sweep": RHO_BASE_SWEEP,
-            "rationale": "Lower bound preserves nonzero antisymmetric term; upper bound keeps rho_P << 1 (Primary Region, below OC-rhoP-1 threshold)."
+            "rationale": "rho_base is the edge-local coupling coefficient in the antisymmetric term of Sigma. It is distinct from rho_P = rank(Im Sigma) / C_X. No regime interpretation of this range is asserted. Origin declares {0.1, 0.3, 0.5} as the convention parameter sweep."
         },
         "records": all_records,
     });
 
     fs::create_dir_all("results").expect("could not create results/");
-    let outpath = format!("results/prc_sim_v012_{}.json", timestamp);
+    let outpath = format!("results/prc_sim_v013_{}.json", timestamp);
     fs::write(&outpath, serde_json::to_string_pretty(&run_record).unwrap())
         .expect("could not write run record");
 

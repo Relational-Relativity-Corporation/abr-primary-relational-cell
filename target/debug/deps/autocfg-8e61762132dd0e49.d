@@ -1,0 +1,10 @@
+C:\Users\Robin Macomber\Documents\Metatron_Dynamics\GitHub_Repos\abr-primary-relational-cell\target\debug\deps\autocfg-8e61762132dd0e49.d: C:\Users\Robin\ Macomber\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\autocfg-1.5.1\src\lib.rs C:\Users\Robin\ Macomber\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\autocfg-1.5.1\src\error.rs C:\Users\Robin\ Macomber\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\autocfg-1.5.1\src\rustc.rs C:\Users\Robin\ Macomber\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\autocfg-1.5.1\src\version.rs
+
+C:\Users\Robin Macomber\Documents\Metatron_Dynamics\GitHub_Repos\abr-primary-relational-cell\target\debug\deps\libautocfg-8e61762132dd0e49.rlib: C:\Users\Robin\ Macomber\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\autocfg-1.5.1\src\lib.rs C:\Users\Robin\ Macomber\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\autocfg-1.5.1\src\error.rs C:\Users\Robin\ Macomber\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\autocfg-1.5.1\src\rustc.rs C:\Users\Robin\ Macomber\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\autocfg-1.5.1\src\version.rs
+
+C:\Users\Robin Macomber\Documents\Metatron_Dynamics\GitHub_Repos\abr-primary-relational-cell\target\debug\deps\libautocfg-8e61762132dd0e49.rmeta: C:\Users\Robin\ Macomber\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\autocfg-1.5.1\src\lib.rs C:\Users\Robin\ Macomber\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\autocfg-1.5.1\src\error.rs C:\Users\Robin\ Macomber\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\autocfg-1.5.1\src\rustc.rs C:\Users\Robin\ Macomber\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\autocfg-1.5.1\src\version.rs
+
+C:\Users\Robin\ Macomber\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\autocfg-1.5.1\src\lib.rs:
+C:\Users\Robin\ Macomber\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\autocfg-1.5.1\src\error.rs:
+C:\Users\Robin\ Macomber\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\autocfg-1.5.1\src\rustc.rs:
+C:\Users\Robin\ Macomber\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\autocfg-1.5.1\src\version.rs:

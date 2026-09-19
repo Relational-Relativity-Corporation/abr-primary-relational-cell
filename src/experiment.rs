@@ -1,8 +1,10 @@
 // experiment.rs — Metatron Dynamics, Inc.
-// abr-primary-relational-cell V0.1.2
+// abr-primary-relational-cell V0.1.3
 //
-// ProcessDirection gate, intervention harness, raw recorder.
-// rho_base is an explicit declared parameter on all evaluation paths.
+// ProcessDirection gate (G8): MultiStep is structurally blocked.
+// Σ(Δ(x_r)) does not imply x_{r+1}. Multi-step evaluation requires
+// explicit Origin declaration — returning Err until that structure
+// is declared and authorized. V0.1 operates on single declared steps only.
 
 use serde::{Deserialize, Serialize};
 use crate::node_field::{NodeField, ObservationClass};
@@ -11,7 +13,11 @@ use crate::admissibility::{run_experiment, ExperimentRecord};
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub enum ProcessDirection {
+    /// Single declared step — admitted.
     SingleStep,
+    /// Multi-step evaluation — NOT admitted without explicit Origin
+    /// declaration structure (not yet defined through V0.9).
+    /// Returns Err to structurally prevent evaluation.
     MultiStep { direction_basis: String },
 }
 
@@ -30,7 +36,16 @@ pub struct InterventionComparison {
     pub comparison_note: String,
 }
 
-/// Single-step evaluation through the ProcessDirection gate.
+/// Single-step evaluation through the ProcessDirection gate (G8).
+///
+/// SingleStep: admitted — returns Ok(ExperimentRecord).
+/// MultiStep: structurally blocked — returns Err.
+///   Σ(Δ(x_r)) does not imply x_{r+1}. Multi-step evaluation
+///   requires explicit Origin declaration of the sequential
+///   observation sequence and relational evolution direction
+///   (operators.rs V7 sequential observation requirement).
+///   That declaration structure is not yet defined through V0.9.
+///   Until it is, MultiStep returns Err unconditionally.
 pub fn run_single_step(
     fixture_id: &str,
     x: &NodeField,
@@ -39,8 +54,22 @@ pub fn run_single_step(
     rho_base: f64,
 ) -> Result<ExperimentRecord, String> {
     match direction {
-        ProcessDirection::SingleStep => Ok(run_experiment(fixture_id, x, rel, rho_base)),
-        ProcessDirection::MultiStep { .. } => Ok(run_experiment(fixture_id, x, rel, rho_base)),
+        ProcessDirection::SingleStep => {
+            Ok(run_experiment(fixture_id, x, rel, rho_base))
+        }
+        ProcessDirection::MultiStep { direction_basis } => {
+            Err(format!(
+                "G8 ProcessDirection gate: MultiStep evaluation is not admitted \
+                 without explicit Origin declaration of sequential observation \
+                 sequence and relational evolution direction. \
+                 Σ(Δ(x_r)) does not imply x_{{r+1}}. \
+                 direction_basis='{}' is present but the required Origin \
+                 declaration structure has not been defined through V0.9. \
+                 Declare the sequential observation sequence through M before \
+                 invoking MultiStep.",
+                direction_basis
+            ))
+        }
     }
 }
 
@@ -96,9 +125,31 @@ mod tests {
     fn g8_single_step_admitted() {
         let rel = fixture_f2_chain3();
         let x = NodeField::single(vec![1.0, 2.0, 3.0], ObservationClass::SimulatedInput);
-        let result = run_single_step("g8_test", &x, &rel, &ProcessDirection::SingleStep, 0.3);
-        assert!(result.is_ok());
+        let result = run_single_step("g8_pos_test", &x, &rel, &ProcessDirection::SingleStep, 0.3);
+        assert!(result.is_ok(), "SingleStep must be admitted");
         assert!(result.unwrap().failure_mode.is_none());
+    }
+
+    #[test]
+    fn g8_multi_step_blocked() {
+        // Negative test: MultiStep must be structurally blocked (G8).
+        // Σ(Δ(x_r)) does not imply x_{r+1}.
+        let rel = fixture_f2_chain3();
+        let x = NodeField::single(vec![1.0, 2.0, 3.0], ObservationClass::SimulatedInput);
+        let result = run_single_step(
+            "g8_neg_test",
+            &x,
+            &rel,
+            &ProcessDirection::MultiStep {
+                direction_basis: "test_direction".to_string(),
+            },
+            0.3,
+        );
+        assert!(result.is_err(),
+            "MultiStep must return Err — not admitted without Origin declaration (G8)");
+        let err = result.unwrap_err();
+        assert!(err.contains("G8 ProcessDirection gate"),
+            "Error must identify G8 gate: {}", err);
     }
 
     #[test]
@@ -107,8 +158,8 @@ mod tests {
         let x = NodeField::single(base.clone(), ObservationClass::SimulatedInput);
         let x_prime = NodeField::single(base.clone(), ObservationClass::SimulatedInput)
             .with_disturbance_at(0, 0.5);
-        assert!((x.field[0][0] - 1.0).abs() < 1e-12);
-        assert!((x_prime.field[0][0] - 1.5).abs() < 1e-12);
+        assert!((x.field[0][0] - 1.0).abs() < 1e-12, "x must be unchanged");
+        assert!((x_prime.field[0][0] - 1.5).abs() < 1e-12, "x' must have disturbance");
     }
 
     #[test]

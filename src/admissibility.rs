@@ -1,5 +1,5 @@
 // admissibility.rs — Metatron Dynamics, Inc.
-// abr-primary-relational-cell V0.1.2
+// abr-primary-relational-cell V0.1.3
 //
 // rho_base is now an explicit Origin-declared parameter passed through
 // every evaluation path. No default value is used anywhere.

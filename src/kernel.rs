@@ -1,5 +1,5 @@
 // kernel.rs — Metatron Dynamics, Inc.
-// abr-primary-relational-cell V0.1.2
+// abr-primary-relational-cell V0.1.3
 //
 // Primary kernel: E_primary = Σ(Δ(x))
 //
@@ -7,14 +7,14 @@
 // against that authority. Kernel files are reference only — not a dependency.
 //
 // rho_base declaration (Origin, 18 Sep 2026):
-//   Admissible Primary Region operating range: [0.1, 0.5].
-//   Rationale: rho_base must be large enough that antisymmetric term is
-//   nonzero (expression_condition admissible) and small enough that ρ_P ≪ 1
-//   (unambiguously Primary Region, below unknown ABR activation threshold
-//   OC-ρP-1). Values above 0.5 risk approaching the transition region.
-//   Values below 0.1 suppress the antisymmetric term to near-zero.
-//   This range is a declared Origin parameter — not an imported default.
-//   Convention fixtures run at 0.1, 0.3, and 0.5 to span the declared range.
+//   Declared convention parameter sweep values: {0.1, 0.3, 0.5}.
+//   rho_base is the scaling coefficient for the edge-local coupling ρ[e]
+//   in the antisymmetric term of Σ. It is distinct from ρ_P:
+//     ρ[e] = rho_base · χ[source(e)] / (1 + χ[source(e)])  — edge-local
+//     ρ_P  = rank(Im Σ) / C_X                               — topology-level
+//   rho_base does not control ρ_P. No regime interpretation of this range
+//   is asserted. Origin declares {0.1, 0.3, 0.5} as the convention sweep.
+//   This is a declared Origin parameter — not an imported default.
 //
 // B absent. ABR operators absent. No persistence. No path accumulation.
 
