@@ -1,6 +1,6 @@
 [package]
 name = "abr-primary-relational-cell"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 authors = ["Metatron Dynamics, Inc."]
 description = "Primary Relational Cell Simulator — ABR/ABRCE V1.2 convention build"
@@ -8,6 +8,62 @@ description = "Primary Relational Cell Simulator — ABR/ABRCE V1.2 convention b
 [[bin]]
 name = "simulate"
 path = "src/bin/simulate.rs"
+
+[[bin]]
+name = "quantum_dot_sim"
+path = "src/bin/quantum_dot_sim.rs"
+
+[[bin]]
+name = "path1_ansaloni_obs"
+path = "src/bin/path1_ansaloni_obs.rs"
+
+[[bin]]
+name = "path1_full_system"
+path = "src/bin/path1_full_system.rs"
+
+[[bin]]
+name = "path1_full_system_v2"
+path = "src/bin/path1_full_system_v2.rs"
+
+[[bin]]
+name = "path1_full_system_v3"
+path = "src/bin/path1_full_system_v3.rs"
+
+[[bin]]
+name = "path1_full_system_v4"
+path = "src/bin/path1_full_system_v4.rs"
+
+[[bin]]
+name = "path1_full_system_v5"
+path = "src/bin/path1_full_system_v5.rs"
+
+[[bin]]
+name = "path1_full_system_v6"
+path = "src/bin/path1_full_system_v6.rs"
+
+[[bin]]
+name = "path1_full_system_v6_1"
+path = "src/bin/path1_full_system_v6_1.rs"
+
+[[bin]]
+name = "path1_full_system_v7"
+path = "src/bin/path1_full_system_v7.rs"
+
+[[bin]]
+name = "path1_full_system_v8"
+path = "src/bin/path1_full_system_v8.rs"
+
+[[bin]]
+name = "path1_full_system_v8_1"
+path = "src/bin/path1_full_system_v8_1.rs"
+
+[[bin]]
+name = "path1_full_system_v8_2"
+path = "src/bin/path1_full_system_v8_2.rs"
+
+[[bin]]
+name = "v02_sweep"
+path = "src/bin/v02_sweep.rs"
 
 [lib]
 name = "prc"
@@ -18,7 +74,3 @@ serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 chrono = "0.4"
 nalgebra = "0.32"
-
-[[bin]]
-name = "quantum_dot_sim"
-path = "src/bin/quantum_dot_sim.rs"
